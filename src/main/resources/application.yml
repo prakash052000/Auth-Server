@@ -1,0 +1,28 @@
+server:
+  port: 7070  # Set the port for the Auth Service
+
+spring:
+  application:
+    name: AUTH-SERVICE  # Unique service name
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka/  # Eureka Server URL
+    register-with-eureka: true
+    fetch-registry: true
+  instance:
+    prefer-ip-address: true  # Register with IP instead of hostname
+    instance-id: ${spring.application.name}:${server.port}  # Avoid duplicate instances
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"  # Expose all actuator endpoints
+  endpoint:
+    health:
+      show-details: always
+  health:
+    defaults:
+      enabled: true
