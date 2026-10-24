@@ -16,14 +16,26 @@ public class JwtUtil {
     @Value("${jwt.expiration}")
     private long expirationTime;
 
-    // Generate JWT Token
     public String generateToken(String username) {
+        return generateToken(username, "USER");
+    }
+
+    public String generateToken(String username, String role) {
         return Jwts.builder()
                 .setSubject(username)
+                .claim("role", role == null ? "USER" : role)
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + expirationTime))
                 .signWith(SignatureAlgorithm.HS256, secretKey)
                 .compact();
+    }
+
+    public boolean isValid(String token) {
+        try {
+            return !isTokenExpired(token);
+        } catch (JwtException | IllegalArgumentException ex) {
+            return false;
+        }
     }
 
     // Extract Username from JWT

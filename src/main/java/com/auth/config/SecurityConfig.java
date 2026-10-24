@@ -16,11 +16,13 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.csrf(AbstractHttpConfigurer::disable)
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/auth/register", "/auth/login", "/jwt/generate-key").permitAll() // Allow public endpoints
-                .requestMatchers("/actuator/**").permitAll()  // ✅ Explicitly allow actuator
+                .requestMatchers(
+                        "/", "/error", "/auth/**", "/jwt/**", "/actuator/**",
+                        "/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html", "/webjars/**"
+                ).permitAll()
                 .anyRequest().authenticated()
             )
-            .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)); // Stateless
+            .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
 
         return http.build();
     }
